@@ -21,11 +21,36 @@
  * @endcond
  */
 
-package de.flashpixx.examrepository;
+package de.flashpixx.examrepository.hash;
+
+import javax.annotation.Nonnull;
 
 /**
- * defines the meta-data of the element
+ * hash value
  */
-public interface IMetaData
+public interface IHashFunction
 {
+    /**
+     * adds a new value
+     *
+     * @param p_value value
+     * @return self reference
+     */
+    IHashFunction put( @Nonnull final String p_value );
+
+    /**
+     * add a new byte value
+     *
+     * @param p_value value
+     * @return self reference
+     */
+    IHashFunction put( @Nonnull final byte p_value );
+
+    /**
+     * returns the hash value of the data
+     *
+     * @return  hash
+     */
+    String hash();
+
 }
