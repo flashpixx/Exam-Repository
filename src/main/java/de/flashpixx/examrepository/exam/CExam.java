@@ -81,11 +81,8 @@ public final class CExam implements IExam
 
         m_hash = CHash.INSTANCE
                       .get()
-                      .put( m_initialmetadata.institution() )
-                      .put( m_initialmetadata.institutionemail() )
-                      .put( m_initialmetadata.author() )
-                      .put( m_initialmetadata.authoremail() )
-                      .put( m_initialmetadata.comment() )
+                      .put( m_initialmetadata.stream() )
+                      .put( p_predecessor.stream().map( IExam::hash ) )
                       .hash();
 
     }
@@ -141,7 +138,13 @@ public final class CExam implements IExam
     @Override
     public final String toString()
     {
-        return MessageFormat.format( "[ {0} | {1} | {2} | 3 ]", m_hash, m_predecessor, m_initialmetadata, m_updatedmetadata );
+        return MessageFormat.format(
+                "[ {0} | {1} | {2} | {3} ]",
+                m_hash,
+                m_predecessor,
+                m_initialmetadata,
+                m_updatedmetadata
+        );
     }
 
     /**

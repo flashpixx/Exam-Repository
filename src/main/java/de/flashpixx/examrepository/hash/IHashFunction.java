@@ -24,6 +24,7 @@
 package de.flashpixx.examrepository.hash;
 
 import javax.annotation.Nonnull;
+import java.util.stream.Stream;
 
 /**
  * hash value
@@ -44,7 +45,15 @@ public interface IHashFunction
      * @param p_value value
      * @return self reference
      */
-    IHashFunction put( @Nonnull final byte p_value );
+    IHashFunction put( final byte p_value );
+
+    /**
+     * add all stream elements
+     *
+     * @param p_stream stream
+     * @return self reference
+     */
+    IHashFunction put( @Nonnull final Stream<String> p_stream );
 
     /**
      * returns the hash value of the data

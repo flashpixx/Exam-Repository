@@ -23,6 +23,8 @@
 
 package de.flashpixx.examrepository.metadata;
 
+import java.util.stream.Stream;
+
 /**
  * defines the meta-data of the element
  */
@@ -61,6 +63,12 @@ public interface IMetaData
         public final String comment()
         {
             return "";
+        }
+
+        @Override
+        public final Stream<String> stream()
+        {
+            return Stream.empty();
         }
 
         @Override
@@ -116,5 +124,13 @@ public interface IMetaData
      * @return comment
      */
     String comment();
+
+    /**
+     * stream over all data
+     *
+     * @return data
+     */
+    Stream<String> stream();
+
 
 }

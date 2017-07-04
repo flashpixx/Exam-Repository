@@ -30,6 +30,7 @@ import com.google.common.hash.Hashing;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * hash factory
@@ -84,9 +85,16 @@ public final class CHash implements Supplier<IHashFunction>
         }
 
         @Override
-        public final IHashFunction put( byte p_value )
+        public final IHashFunction put( final byte p_value )
         {
             m_hasher.putByte( p_value );
+            return this;
+        }
+
+        @Override
+        public final IHashFunction put( @Nonnull final Stream<String> p_stream )
+        {
+            p_stream.forEach( i -> m_hasher.putString( i, Charsets.UTF_8 ) );
             return this;
         }
 

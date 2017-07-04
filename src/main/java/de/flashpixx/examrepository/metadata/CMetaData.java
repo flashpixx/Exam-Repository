@@ -26,6 +26,7 @@ package de.flashpixx.examrepository.metadata;
 import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 /**
  * meta-data implementation
@@ -90,6 +91,12 @@ public final class CMetaData implements IMetaData
     public final String comment()
     {
         return m_data.get( "comment" );
+    }
+
+    @Override
+    public final Stream<String> stream()
+    {
+        return m_data.values().stream();
     }
 
     /**
