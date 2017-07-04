@@ -29,8 +29,11 @@ import de.flashpixx.examrepository.metadata.IMetaData;
 
 import javax.annotation.Nonnull;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -54,6 +57,10 @@ public final class CExam implements IExam
      * updated meta-data
      */
     private final Set<IMetaData> m_updatedmetadata = new LinkedHashSet<>();
+    /**
+     * predecessor nodes
+     */
+    private final Set<IExam> m_predecessor;
 
     /**
      * ctor
@@ -64,11 +71,13 @@ public final class CExam implements IExam
      */
     private CExam(
             @Nonnull final IMetaData p_initmetadata,
-            @Nonnull final IBinary p_binary
+            @Nonnull final IBinary p_binary,
+            @Nonnull final Set<IExam> p_predecessor
     )
     {
         m_binary = p_binary;
         m_initialmetadata = p_initmetadata;
+        m_predecessor = Collections.unmodifiableSet( p_predecessor );
 
         m_hash = CHash.INSTANCE
                       .get()
@@ -112,6 +121,12 @@ public final class CExam implements IExam
     }
 
     @Override
+    public final Set<IExam> predecessor()
+    {
+        return m_predecessor;
+    }
+
+    @Override
     public final int hashCode()
     {
         return m_hash.hashCode();
@@ -126,7 +141,7 @@ public final class CExam implements IExam
     @Override
     public final String toString()
     {
-        return MessageFormat.format( "[ {0} | {1} | {2} ]", m_hash, m_initialmetadata, m_updatedmetadata );
+        return MessageFormat.format( "[ {0} | {1} | {2} | 3 ]", m_hash, m_predecessor, m_initialmetadata, m_updatedmetadata );
     }
 
     /**
@@ -141,6 +156,15 @@ public final class CExam implements IExam
             @Nonnull final IBinary p_binary
     )
     {
-        return new CExam( p_initmetadata, p_binary );
+        return new CExam( p_initmetadata, p_binary, Collections.emptySet() );
+    }
+
+    public static IExam from(
+            @Nonnull final IMetaData p_initmetadata,
+            @Nonnull final IBinary p_binary,
+            @Nonnull final IExam... p_predecessor
+    )
+    {
+        return new CExam( p_initmetadata, p_binary, Arrays.stream( p_predecessor ).collect( Collectors.toSet() ) );
     }
 }

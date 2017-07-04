@@ -28,6 +28,59 @@ package de.flashpixx.examrepository.metadata;
  */
 public interface IMetaData
 {
+    /**
+     * empty object
+     */
+    IMetaData EMPTY = new IMetaData()
+    {
+        @Override
+        public final String author()
+        {
+            return "";
+        }
+
+        @Override
+        public final String authoremail()
+        {
+            return "";
+        }
+
+        @Override
+        public final String institution()
+        {
+            return "";
+        }
+
+        @Override
+        public final String institutionemail()
+        {
+            return "";
+        }
+
+        @Override
+        public final String comment()
+        {
+            return "";
+        }
+
+        @Override
+        public final int hashCode()
+        {
+            return 0;
+        }
+
+        @Override
+        public final boolean equals( final Object p_object )
+        {
+            return ( p_object != null ) && ( p_object instanceof IMetaData ) && ( this.hashCode() == p_object.hashCode() );
+        }
+
+        @Override
+        public final String toString()
+        {
+            return "";
+        }
+    };
 
     /**
      * returns the author
