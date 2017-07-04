@@ -24,78 +24,93 @@
 package de.flashpixx.examrepository.binary;
 
 import de.flashpixx.examrepository.hash.CHash;
-import org.apache.commons.io.input.NullInputStream;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
+import javax.annotation.Nonnull;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+
 
 /**
- * interface of binary element
+ * binary storage
  */
-public interface IBinary
+public final class CBinary implements IBinary
 {
     /**
-     * empty object
+     * stored data
      */
-    IBinary EMPTY = new IBinary()
+    private final byte[] m_data;
+    /**
+     * data hash
+     */
+    private final String m_hash;
+    /**
+     * name
+     */
+    private final String m_name;
+
+    /**
+     * ctor
+     *
+     * @param p_name name
+     * @param p_stream input stream
+     */
+    private CBinary( @Nonnull final String p_name, @Nonnull final InputStream p_stream ) throws IOException
     {
-        /**
-         * hash
-         */
-        private final String m_hash = CHash.INSTANCE.get().putstring( "" ).hash();
-        /**
-         * output stream
-         */
-        private final InputStream m_stream = new NullInputStream( 0 );
+        m_name = p_name;
+        m_data = IOUtils.toByteArray( p_stream );
+        m_hash = CHash.INSTANCE.get().putstring( p_name ).putbyte( Arrays.stream( ArrayUtils.toObject( m_data ) ) ).hash();
+    }
 
-        @Override
-        public final String hash()
-        {
-            return m_hash;
-        }
+    @Override
+    public final String hash()
+    {
+        return m_hash;
+    }
 
-        @Override
-        public final InputStream stream()
-        {
-            return m_stream;
-        }
+    @Override
+    public final InputStream stream()
+    {
+        return new ByteArrayInputStream( m_data );
+    }
 
-        @Override
-        public final String name()
-        {
-            return "";
-        }
+    @Override
+    public final String name()
+    {
+        return m_name;
+    }
 
-        @Override
-        public final int hashCode()
-        {
-            return m_hash.hashCode();
-        }
+    @Override
+    public final int hashCode()
+    {
+        return m_hash.hashCode();
+    }
 
-        @Override
-        public final boolean equals( final Object p_object )
-        {
-            return ( p_object != null ) && ( p_object instanceof IBinary ) && ( this.hashCode() == p_object.hashCode() );
-        }
-    };
+    @Override
+    public final boolean equals( final Object p_object )
+    {
+        return ( p_object != null ) && ( p_object instanceof IBinary ) && ( this.hashCode() == p_object.hashCode() );
+    }
 
     /**
-     * hash of the binary data
+     * factory to create a binary object from stream
      *
-     * @return hash
+     * @param p_name name
+     * @param p_stream input stream
+     * @return binary
      */
-    String hash();
-
-    /**
-     * stream
-     *
-     * @return stream
-     */
-    InputStream stream();
-
-    /**
-     * output name
-     *
-     * @return name / file name
-     */
-    String name();
+    public static IBinary from( @Nonnull final String p_name, @Nonnull final InputStream p_stream )
+    {
+        try
+        {
+            return new CBinary( p_name, p_stream );
+        }
+        catch ( final IOException l_exception )
+        {
+            return IBinary.EMPTY;
+        }
+    }
 }

@@ -21,81 +21,17 @@
  * @endcond
  */
 
-package de.flashpixx.examrepository.binary;
+package de.flashpixx.examrepository.binary.access;
 
-import de.flashpixx.examrepository.hash.CHash;
-import org.apache.commons.io.input.NullInputStream;
+import de.flashpixx.examrepository.binary.IBinary;
 
-import java.io.InputStream;
+import java.util.Set;
+import java.util.function.Function;
+
 
 /**
- * interface of binary element
+ * data-reader interface
  */
-public interface IBinary
+public interface IDataReader extends Function<String, Set<IBinary>>
 {
-    /**
-     * empty object
-     */
-    IBinary EMPTY = new IBinary()
-    {
-        /**
-         * hash
-         */
-        private final String m_hash = CHash.INSTANCE.get().putstring( "" ).hash();
-        /**
-         * output stream
-         */
-        private final InputStream m_stream = new NullInputStream( 0 );
-
-        @Override
-        public final String hash()
-        {
-            return m_hash;
-        }
-
-        @Override
-        public final InputStream stream()
-        {
-            return m_stream;
-        }
-
-        @Override
-        public final String name()
-        {
-            return "";
-        }
-
-        @Override
-        public final int hashCode()
-        {
-            return m_hash.hashCode();
-        }
-
-        @Override
-        public final boolean equals( final Object p_object )
-        {
-            return ( p_object != null ) && ( p_object instanceof IBinary ) && ( this.hashCode() == p_object.hashCode() );
-        }
-    };
-
-    /**
-     * hash of the binary data
-     *
-     * @return hash
-     */
-    String hash();
-
-    /**
-     * stream
-     *
-     * @return stream
-     */
-    InputStream stream();
-
-    /**
-     * output name
-     *
-     * @return name / file name
-     */
-    String name();
 }

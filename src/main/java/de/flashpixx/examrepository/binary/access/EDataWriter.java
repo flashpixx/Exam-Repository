@@ -21,81 +21,37 @@
  * @endcond
  */
 
-package de.flashpixx.examrepository.binary;
-
-import de.flashpixx.examrepository.hash.CHash;
-import org.apache.commons.io.input.NullInputStream;
-
-import java.io.InputStream;
+package de.flashpixx.examrepository.binary.access;
 
 /**
- * interface of binary element
+ * data writer
  */
-public interface IBinary
+public enum EDataWriter
 {
+    FILE( new CFileWriter() );
+
     /**
-     * empty object
+     * writer instance
      */
-    IBinary EMPTY = new IBinary()
+    private final IDataWriter m_writer;
+
+    /**
+     * ctor
+     *
+     * @param p_writer writer
+     */
+    EDataWriter( final IDataWriter p_writer )
     {
-        /**
-         * hash
-         */
-        private final String m_hash = CHash.INSTANCE.get().putstring( "" ).hash();
-        /**
-         * output stream
-         */
-        private final InputStream m_stream = new NullInputStream( 0 );
-
-        @Override
-        public final String hash()
-        {
-            return m_hash;
-        }
-
-        @Override
-        public final InputStream stream()
-        {
-            return m_stream;
-        }
-
-        @Override
-        public final String name()
-        {
-            return "";
-        }
-
-        @Override
-        public final int hashCode()
-        {
-            return m_hash.hashCode();
-        }
-
-        @Override
-        public final boolean equals( final Object p_object )
-        {
-            return ( p_object != null ) && ( p_object instanceof IBinary ) && ( this.hashCode() == p_object.hashCode() );
-        }
-    };
+        m_writer = p_writer;
+    }
 
     /**
-     * hash of the binary data
+     * data writer
      *
-     * @return hash
+     * @return writer instance
      */
-    String hash();
-
-    /**
-     * stream
-     *
-     * @return stream
-     */
-    InputStream stream();
-
-    /**
-     * output name
-     *
-     * @return name / file name
-     */
-    String name();
+    public final IDataWriter get()
+    {
+        return m_writer;
+    }
 }

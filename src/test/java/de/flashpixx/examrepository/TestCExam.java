@@ -23,7 +23,7 @@
 
 package de.flashpixx.examrepository;
 
-import de.flashpixx.examrepository.binary.IBinary;
+import de.flashpixx.examrepository.binary.access.EDataReader;
 import de.flashpixx.examrepository.exam.CExam;
 import de.flashpixx.examrepository.metadata.CMetaData;
 import org.junit.Test;
@@ -41,13 +41,13 @@ public final class TestCExam extends IBaseTest
     {
         System.out.println(
             CExam.from(
+                EDataReader.FILE,
                 CMetaData.from(
                     "TU-Clausthal", "info@tu-clausthal.de",
                     "Any Author", "any.author@tu-clausthal.de",
                     "a long description of the exam"
                 ),
-
-                IBinary.EMPTY
+                ""
             )
         );
     }

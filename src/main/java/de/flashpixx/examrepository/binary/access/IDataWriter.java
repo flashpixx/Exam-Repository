@@ -21,81 +21,24 @@
  * @endcond
  */
 
-package de.flashpixx.examrepository.binary;
-
-import de.flashpixx.examrepository.hash.CHash;
-import org.apache.commons.io.input.NullInputStream;
+package de.flashpixx.examrepository.binary.access;
 
 import java.io.InputStream;
+import java.util.function.BiConsumer;
+
 
 /**
- * interface of binary element
+ * data writer
  */
-public interface IBinary
+public interface IDataWriter extends BiConsumer<String, InputStream>
 {
     /**
-     * empty object
-     */
-    IBinary EMPTY = new IBinary()
-    {
-        /**
-         * hash
-         */
-        private final String m_hash = CHash.INSTANCE.get().putstring( "" ).hash();
-        /**
-         * output stream
-         */
-        private final InputStream m_stream = new NullInputStream( 0 );
-
-        @Override
-        public final String hash()
-        {
-            return m_hash;
-        }
-
-        @Override
-        public final InputStream stream()
-        {
-            return m_stream;
-        }
-
-        @Override
-        public final String name()
-        {
-            return "";
-        }
-
-        @Override
-        public final int hashCode()
-        {
-            return m_hash.hashCode();
-        }
-
-        @Override
-        public final boolean equals( final Object p_object )
-        {
-            return ( p_object != null ) && ( p_object instanceof IBinary ) && ( this.hashCode() == p_object.hashCode() );
-        }
-    };
-
-    /**
-     * hash of the binary data
+     * concat of prefix and binary name
      *
-     * @return hash
+     * @param p_prefix prefix
+     * @param p_name binary name
+     * @return concated data
      */
-    String hash();
+    String concat( final String p_prefix, final String p_name );
 
-    /**
-     * stream
-     *
-     * @return stream
-     */
-    InputStream stream();
-
-    /**
-     * output name
-     *
-     * @return name / file name
-     */
-    String name();
 }

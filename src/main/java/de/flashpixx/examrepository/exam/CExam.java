@@ -23,7 +23,10 @@
 
 package de.flashpixx.examrepository.exam;
 
+import de.flashpixx.examrepository.binary.access.EDataReader;
 import de.flashpixx.examrepository.binary.IBinary;
+import de.flashpixx.examrepository.binary.access.EDataWriter;
+import de.flashpixx.examrepository.binary.access.IDataWriter;
 import de.flashpixx.examrepository.hash.CHash;
 import de.flashpixx.examrepository.metadata.IMetaData;
 
@@ -34,6 +37,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -50,13 +54,13 @@ public final class CExam implements IExam
      */
     private final IMetaData m_initialmetadata;
     /**
-     * binary data
-     */
-    private final IBinary m_binary;
-    /**
      * updated meta-data
      */
-    private final Set<IMetaData> m_updatedmetadata = new LinkedHashSet<>();
+    private final Set<IMetaData> m_additionalmetadata = new LinkedHashSet<>();
+    /**
+     * binary data
+     */
+    private final Set<IBinary> m_binary;
     /**
      * predecessor nodes
      */
@@ -67,11 +71,10 @@ public final class CExam implements IExam
      *
      * @param p_initmetadata initialized meta-data
      * @param p_binary binary data
-     * @todo binary data hashing is missing
      */
     private CExam(
             @Nonnull final IMetaData p_initmetadata,
-            @Nonnull final IBinary p_binary,
+            @Nonnull final Set<IBinary> p_binary,
             @Nonnull final Set<IExam> p_predecessor
     )
     {
@@ -81,8 +84,9 @@ public final class CExam implements IExam
 
         m_hash = CHash.INSTANCE
                       .get()
-                      .put( m_initialmetadata.stream() )
-                      .put( p_predecessor.stream().map( IExam::hash ) )
+                      .putstring( m_initialmetadata.stream() )
+                      .putstring( p_predecessor.stream().map( IExam::hash ) )
+                      .putstring( p_binary.stream().map( IBinary::hash ) )
                       .hash();
 
     }
@@ -94,9 +98,16 @@ public final class CExam implements IExam
     }
 
     @Override
-    public final Set<IMetaData> updatedmetadata()
+    public final IExam addmetadata( @Nonnull final IMetaData... p_data )
     {
-        return m_updatedmetadata;
+        m_additionalmetadata.addAll( Arrays.asList( p_data ) );
+        return this;
+    }
+
+    @Override
+    public final Stream<IMetaData> additionalmetadata()
+    {
+        return m_additionalmetadata.stream();
     }
 
     /**
@@ -106,7 +117,7 @@ public final class CExam implements IExam
      * @return self reference
      */
     @Override
-    public final IExam updatemetadata()
+    public final IExam lookup()
     {
         return this;
     }
@@ -121,6 +132,20 @@ public final class CExam implements IExam
     public final Set<IExam> predecessor()
     {
         return m_predecessor;
+    }
+
+    @Override
+    public final Stream<IBinary> binary()
+    {
+        return m_binary.stream();
+    }
+
+    @Override
+    public final IExam store( final EDataWriter p_writer, final String p_prefix )
+    {
+        final IDataWriter l_writer = p_writer.get();
+        m_binary.forEach( i -> l_writer.accept( l_writer.concat( p_prefix, i.name() ), i.stream() ) );
+        return this;
     }
 
     @Override
@@ -143,31 +168,44 @@ public final class CExam implements IExam
                 m_hash,
                 m_predecessor,
                 m_initialmetadata,
-                m_updatedmetadata
+                m_additionalmetadata
         );
     }
 
     /**
      * factory
      *
+     * @param p_datareader data reader
      * @param p_initmetadata initial meta-data
      * @param p_binary binary data
      * @return exam
      */
     public static IExam from(
-            @Nonnull final IMetaData p_initmetadata,
-            @Nonnull final IBinary p_binary
+        @Nonnull final EDataReader p_datareader,
+        @Nonnull final IMetaData p_initmetadata,
+        @Nonnull final String p_binary
     )
     {
-        return new CExam( p_initmetadata, p_binary, Collections.emptySet() );
+        return new CExam( p_initmetadata, p_datareader.get().apply( p_binary ), Collections.emptySet() );
     }
 
+    /**
+     * factory
+     *
+     * @param p_datareader data reader
+     * @param p_initmetadata initial meta-data
+     * @param p_binary binary data
+     * @param p_predecessor predecessor nodes
+     * @return exam
+     */
     public static IExam from(
-            @Nonnull final IMetaData p_initmetadata,
-            @Nonnull final IBinary p_binary,
-            @Nonnull final IExam... p_predecessor
+        @Nonnull final EDataReader p_datareader,
+        @Nonnull final IMetaData p_initmetadata,
+        @Nonnull final String p_binary,
+        @Nonnull final IExam... p_predecessor
     )
     {
-        return new CExam( p_initmetadata, p_binary, Arrays.stream( p_predecessor ).collect( Collectors.toSet() ) );
+        return new CExam( p_initmetadata, p_datareader.get().apply( p_binary ), Arrays.stream( p_predecessor ).collect( Collectors.toSet() ) );
     }
+
 }

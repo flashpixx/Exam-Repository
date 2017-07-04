@@ -132,5 +132,4 @@ public interface IMetaData
      */
     Stream<String> stream();
 
-
 }

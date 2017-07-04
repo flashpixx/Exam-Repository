@@ -34,26 +34,34 @@ public interface IHashFunction
     /**
      * adds a new value
      *
-     * @param p_value value
+     * @param p_value stringvalue
      * @return self reference
      */
-    IHashFunction put( @Nonnull final String p_value );
+    IHashFunction putstring( @Nonnull final String p_value );
 
     /**
      * add a new byte value
      *
-     * @param p_value value
+     * @param p_value byte value
      * @return self reference
      */
-    IHashFunction put( final byte p_value );
+    IHashFunction putbyte( final byte p_value );
 
     /**
      * add all stream elements
      *
-     * @param p_stream stream
+     * @param p_stream string stream
      * @return self reference
      */
-    IHashFunction put( @Nonnull final Stream<String> p_stream );
+    IHashFunction putstring( @Nonnull final Stream<String> p_stream );
+
+    /**
+     * adds all stream elements
+     *
+     * @param p_stream byte stream
+     * @return self reference
+     */
+    IHashFunction putbyte( @Nonnull final Stream<Byte> p_stream );
 
     /**
      * returns the hash value of the data

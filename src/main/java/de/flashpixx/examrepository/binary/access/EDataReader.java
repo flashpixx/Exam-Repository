@@ -21,81 +21,37 @@
  * @endcond
  */
 
-package de.flashpixx.examrepository.binary;
-
-import de.flashpixx.examrepository.hash.CHash;
-import org.apache.commons.io.input.NullInputStream;
-
-import java.io.InputStream;
+package de.flashpixx.examrepository.binary.access;
 
 /**
- * interface of binary element
+ * data reader
  */
-public interface IBinary
+public enum  EDataReader
 {
+    FILE( new CFileReader() );
+
     /**
-     * empty object
+     * data reader instance
      */
-    IBinary EMPTY = new IBinary()
+    private final IDataReader m_reader;
+
+    /**
+     * data
+     *
+     * @param p_reader data reader
+     */
+    EDataReader( final IDataReader p_reader )
     {
-        /**
-         * hash
-         */
-        private final String m_hash = CHash.INSTANCE.get().putstring( "" ).hash();
-        /**
-         * output stream
-         */
-        private final InputStream m_stream = new NullInputStream( 0 );
-
-        @Override
-        public final String hash()
-        {
-            return m_hash;
-        }
-
-        @Override
-        public final InputStream stream()
-        {
-            return m_stream;
-        }
-
-        @Override
-        public final String name()
-        {
-            return "";
-        }
-
-        @Override
-        public final int hashCode()
-        {
-            return m_hash.hashCode();
-        }
-
-        @Override
-        public final boolean equals( final Object p_object )
-        {
-            return ( p_object != null ) && ( p_object instanceof IBinary ) && ( this.hashCode() == p_object.hashCode() );
-        }
-    };
+        m_reader = p_reader;
+    }
 
     /**
-     * hash of the binary data
+     * get data reader
      *
-     * @return hash
+     * @return reader instance
      */
-    String hash();
-
-    /**
-     * stream
-     *
-     * @return stream
-     */
-    InputStream stream();
-
-    /**
-     * output name
-     *
-     * @return name / file name
-     */
-    String name();
+    public final IDataReader get()
+    {
+        return m_reader;
+    }
 }

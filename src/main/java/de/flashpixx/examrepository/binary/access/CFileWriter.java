@@ -21,81 +21,26 @@
  * @endcond
  */
 
-package de.flashpixx.examrepository.binary;
+package de.flashpixx.examrepository.binary.access;
 
-import de.flashpixx.examrepository.hash.CHash;
-import org.apache.commons.io.input.NullInputStream;
-
+import java.io.File;
 import java.io.InputStream;
 
+
 /**
- * interface of binary element
+ * file writer
  */
-public interface IBinary
+public final class CFileWriter implements IDataWriter
 {
-    /**
-     * empty object
-     */
-    IBinary EMPTY = new IBinary()
+    @Override
+    public final void accept( final String p_nam, final InputStream p_stream )
     {
-        /**
-         * hash
-         */
-        private final String m_hash = CHash.INSTANCE.get().putstring( "" ).hash();
-        /**
-         * output stream
-         */
-        private final InputStream m_stream = new NullInputStream( 0 );
 
-        @Override
-        public final String hash()
-        {
-            return m_hash;
-        }
+    }
 
-        @Override
-        public final InputStream stream()
-        {
-            return m_stream;
-        }
-
-        @Override
-        public final String name()
-        {
-            return "";
-        }
-
-        @Override
-        public final int hashCode()
-        {
-            return m_hash.hashCode();
-        }
-
-        @Override
-        public final boolean equals( final Object p_object )
-        {
-            return ( p_object != null ) && ( p_object instanceof IBinary ) && ( this.hashCode() == p_object.hashCode() );
-        }
-    };
-
-    /**
-     * hash of the binary data
-     *
-     * @return hash
-     */
-    String hash();
-
-    /**
-     * stream
-     *
-     * @return stream
-     */
-    InputStream stream();
-
-    /**
-     * output name
-     *
-     * @return name / file name
-     */
-    String name();
+    @Override
+    public final String concat( final String p_prefix, final String p_name )
+    {
+        return p_prefix + File.separator + p_name;
+    }
 }

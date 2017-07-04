@@ -23,12 +23,16 @@
 
 package de.flashpixx.examrepository.exam;
 
+import de.flashpixx.examrepository.binary.IBinary;
+import de.flashpixx.examrepository.binary.access.EDataWriter;
 import de.flashpixx.examrepository.hash.CHash;
 import de.flashpixx.examrepository.metadata.IMetaData;
 
+import javax.annotation.Nonnull;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Stream;
 
 
 /**
@@ -44,7 +48,7 @@ public interface IExam
         /**
          * hash
          */
-        private final String m_hash = CHash.INSTANCE.get().put( "" ).hash();
+        private final String m_hash = CHash.INSTANCE.get().putstring( "" ).hash();
 
         @Override
         public final IMetaData initialmetadata()
@@ -53,13 +57,19 @@ public interface IExam
         }
 
         @Override
-        public final Set<IMetaData> updatedmetadata()
+        public final IExam addmetadata( @Nonnull final IMetaData... p_data )
         {
-            return Collections.emptySet();
+            return this;
         }
 
         @Override
-        public final IExam updatemetadata()
+        public final Stream<IMetaData> additionalmetadata()
+        {
+            return Stream.empty();
+        }
+
+        @Override
+        public final IExam lookup()
         {
             return this;
         }
@@ -74,6 +84,18 @@ public interface IExam
         public final Set<IExam> predecessor()
         {
             return Collections.emptySet();
+        }
+
+        @Override
+        public final Stream<IBinary> binary()
+        {
+            return Stream.empty();
+        }
+
+        @Override
+        public final IExam store( final EDataWriter p_writer, final String p_prefix )
+        {
+            return this;
         }
 
         @Override
@@ -103,18 +125,26 @@ public interface IExam
     IMetaData initialmetadata();
 
     /**
-     * updated meta-data
+     * adds a new meta-data set
      *
-     * @return updated meta-data
+     * @param p_data meta-data (chronologically)
+     * @return self reference
      */
-    Set<IMetaData> updatedmetadata();
+    IExam addmetadata( @Nonnull final IMetaData... p_data );
+
+    /**
+     * returns additional meta-data
+     *
+     * @return stream of meta-data (chronologically)
+     */
+    Stream<IMetaData> additionalmetadata();
 
     /**
      * updates meta-data
      *
      * @return self reference
      */
-    IExam updatemetadata();
+    IExam lookup();
 
     /**
      * hash of the exam
@@ -129,5 +159,21 @@ public interface IExam
      * @return set of predecessor
      */
     Set<IExam> predecessor();
+
+    /**
+     * binary data
+     *
+     * @return binary data
+     */
+    Stream<IBinary> binary();
+
+    /**
+     * writer
+     *
+     * @param p_writer writer
+     * @param p_prefix prefix
+     * @return self reference
+     */
+    IExam store( final EDataWriter p_writer, final String p_prefix );
 
 }

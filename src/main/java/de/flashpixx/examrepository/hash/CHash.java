@@ -78,23 +78,30 @@ public final class CHash implements Supplier<IHashFunction>
         }
 
         @Override
-        public final IHashFunction put( @Nonnull final String p_value )
+        public final IHashFunction putstring( @Nonnull final String p_value )
         {
             m_hasher.putString( p_value, Charsets.UTF_8 );
             return this;
         }
 
         @Override
-        public final IHashFunction put( final byte p_value )
+        public final IHashFunction putbyte( final byte p_value )
         {
             m_hasher.putByte( p_value );
             return this;
         }
 
         @Override
-        public final IHashFunction put( @Nonnull final Stream<String> p_stream )
+        public final IHashFunction putstring( @Nonnull final Stream<String> p_stream )
         {
             p_stream.forEach( i -> m_hasher.putString( i, Charsets.UTF_8 ) );
+            return this;
+        }
+
+        @Override
+        public final IHashFunction putbyte( @Nonnull final Stream<Byte> p_stream )
+        {
+            p_stream.forEach( m_hasher::putByte );
             return this;
         }
 
